@@ -44,10 +44,11 @@ export default function Home() {
 
 
   const generateLorem = async () => {
+    setOutput("")
     setLoadingText(true);
     try {
       const res = await fetch(
-        `http://127.0.0.1:5001/generate?paragraphs=${paragraph}&language=${selectedLanguage}&word_count=${words}`
+        `https://apiispumforge.vercel.app/generate?paragraphs=${paragraph}&language=${selectedLanguage}&word_count=${words}`
       );
       const data = await res.json();
       // const process = data.text.split("<br>")
@@ -79,7 +80,10 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   return (
-    <div>
+    <div className="-z-10">
+      <div class="absolute inset-0 h-full -z-10">
+    <div class="absolute inset-0 -z-10 h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#333333_1px,transparent_1px)] [background-size:16px_16px]"></div>
+  </div>
       <center>
         <picture>
           <source srcSet="/dark_logo.png" media="(prefers-color-scheme: dark)" />
@@ -142,7 +146,7 @@ export default function Home() {
                 </form>
               </div>
             </div>
-            <button onClick={generateLorem} class="mt-5 flex items-center rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-white hover:bg-slate-800 hover:border-slate-800 focus:text-white focus:bg-slate-800 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+            <button onClick={generateLorem} class="bg-indigo-600 mt-5 flex items-center rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-100 hover:text-white hover:bg-indigo-800 hover:border-slate-800 focus:text-white focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none cursor-pointer" type="button">
             Genterate
  
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 ml-1.5">
@@ -151,7 +155,7 @@ export default function Home() {
 </button>
           </div>
           <div className="md:w-3/5 p-4  dark:text-gray-800">
-            <div className="px-4 py-2 w-full rounded-xl border border-gray-100 bg-gray-100 dark:bg-gray-900 dark:border-gray-800 text-left">
+            <div className="min-h-50 px-4 py-2 w-full rounded-xl border border-gray-100 bg-gray-100 dark:bg-gray-900 dark:border-gray-800 text-left">
 
 
               {/* <div className="absolute end-2 mr-2 ">
@@ -171,7 +175,7 @@ export default function Home() {
               <div className="" ref={divRef}
               >
 
-                <div className="text-[14px]">
+                <div className="text-[14px] text-slate-300">
                   {output && output?.map((element, index) => (
                     <>
                     <p key={index}>{element}</p><br></br></>
