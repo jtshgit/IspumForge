@@ -175,7 +175,7 @@ export default function Home() {
               <div className="" ref={divRef}
               >
 
-                <div className="text-[14px] text-slate-300">
+                <div className="text-[14px] dark:text-slate-300 text-slate-700">
                   {output && output?.map((element, index) => (
                     <>
                     <p key={index}>{element}</p><br></br></>
@@ -285,11 +285,11 @@ export default function Home() {
         <div className="flex items-center gap-1 ">
           <svg className="h-4 stroke-slate-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M14 9C13.5197 8.40081 12.93 8 12 8C10.0769 8 9 9.14286 9 12C9 14.8571 10.0769 16 12 16C12.93 16 13.5197 15.5992 14 15M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
           2025
-          IspumForge
+          IpsumForge
           Built with
           <svg className="h-4 stroke-slate-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.7 4C18.87 4 21 6.98 21 9.76C21 15.39 12.16 20 12 20C11.84 20 3 15.39 3 9.76C3 6.98 5.13 4 8.3 4C10.12 4 11.31 4.91 12 5.71C12.69 4.91 13.88 4 15.7 4Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
           by
-          <a href="#">Jitesh</a></div>
+          <a className="underline" href="https://jtsh.vercel.app">Jitesh</a></div>
         <div>
           <Link href="/about" className=" hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg px-2 py-2">About
           </Link>
