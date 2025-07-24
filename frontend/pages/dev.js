@@ -1,114 +1,198 @@
+"use client";
+
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiCopy, FiCheck, FiZap, FiBox, FiList, FiAlertTriangle, FiArrowLeft, FiTerminal, FiMonitor } from 'react-icons/fi';
 
-export default function ApiPage() {
-  const router = useRouter();
+// A reusable component for code blocks with a copy button
+const CodeBlock = ({ codeString }) => {
+  const [copied, setCopied] = useState(false);
 
-
-
-  const getButtonClass = (path) =>
-    router.pathname === path
-      ? "text-white bg-[#050708] hover:bg-[#050708]/80 focus:ring-1 focus:ring-[#050708]/50 dark:bg-gray-900 dark:text-white"
-      : "text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-1 focus:ring-gray-100 dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700";
-
-  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(codeString);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
-    <div className={`min-h-screen dark:text-white text-gray-900`}>
-      <main className="p-3 mt-3 max-w-4xl mx-auto">
-      <section className="bg-white dark:bg-gray-800 p-4 flex items-center gap-2 rounded-lg shadow-md mb-3">
-      <svg class="h-5 fill-black dark:fill-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12.261 1.03462C12.6971 1.15253 13 1.54819 13 1.99997V8.99997H19C19.3581 8.99997 19.6888 9.19141 19.8671 9.50191C20.0455 9.8124 20.0442 10.1945 19.8638 10.5038L12.8638 22.5038C12.6361 22.8941 12.1751 23.0832 11.739 22.9653C11.3029 22.8474 11 22.4517 11 22V15H5C4.64193 15 4.3112 14.8085 4.13286 14.498C3.95452 14.1875 3.9558 13.8054 4.13622 13.4961L11.1362 1.4961C11.3639 1.10586 11.8249 0.916719 12.261 1.03462ZM6.74104 13H12C12.5523 13 13 13.4477 13 14V18.301L17.259 11H12C11.4477 11 11 10.5523 11 9.99997V5.69889L6.74104 13Z"></path> </g></svg>
-      <h1 className="text-xl font-bold">API Documentation</h1>
-        </section>
+    <div className="relative group">
+      <pre className="block overflow-x-auto bg-slate-100 dark:bg-slate-900/70 p-4 rounded-xl mt-2 text-sm border border-slate-200 dark:border-slate-800">
+        <code>
+          {codeString}
+        </code>
+      </pre>
+      <motion.button
+        onClick={handleCopy}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className={`absolute top-2.5 right-2.5 p-2 rounded-lg transition-colors text-slate-500 ${copied
+          ? 'bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400'
+          : 'bg-white/50 dark:bg-slate-800/50 group-hover:bg-slate-200 dark:group-hover:bg-slate-700'}`}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          {copied ? (
+            <motion.div
+              key="check"
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <FiCheck className="h-4 w-4" />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="copy"
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <FiCopy className="h-4 w-4" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.button>
+    </div>
+  );
+};
+
+// Component for the new tabbed command examples
+const CommandTabs = () => {
+    const [activeTab, setActiveTab] = useState('curl');
+    const curlCommand = `curl "https://ipsumforge.unibrik.com/api/generate?paragraphs=3&language=english"`;
+    const powershellCommand = `Invoke-WebRequest -Uri "https://ipsumforge.unibrik.com/api/generate?paragraphs=3&language=english"`;
+
+    return (
+        <div className="mt-4">
+            <div className="flex border-b border-slate-200 dark:border-slate-800">
+                <button
+                    onClick={() => setActiveTab('curl')}
+                    className={`flex items-center gap-2 px-4 py-2 sm:text-sm text-xs font-medium transition-colors border-b-2 ${activeTab === 'curl' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+                >
+                    <FiTerminal />
+                    Terminal (cURL)
+                </button>
+                <button
+                    onClick={() => setActiveTab('powershell')}
+                    className={`flex items-center gap-2 px-4 py-2 sm:text-sm text-xs font-medium transition-colors border-b-2 ${activeTab === 'powershell' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+                >
+                    <FiMonitor />
+                    Windows (PowerShell)
+                </button>
+            </div>
+            <div className="pt-4">
+                {activeTab === 'curl' && <CodeBlock codeString={curlCommand} />}
+                {activeTab === 'powershell' && <CodeBlock codeString={powershellCommand} />}
+            </div>
+        </div>
+    )
+}
+
+
+export default function ApiPage() {
+  const languages = [
+    "English", "Spanish", "French", "German", "Hindi", "Chinese", "Japanese",
+    "Italian", "Portuguese", "Russian", "Arabic", "Turkish", "Dutch", "Korean",
+    "Swedish", "Polish", "Greek", "Hebrew", "Thai", "Indonesian"
+  ];
+
+  return (
+    <div className="min-h-screen text-slate-800 dark:text-slate-200">
+      {/* Animated Background */}
+
+      <main className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+
+        <div className="mb-12 mt-8">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">
+                <FiArrowLeft />
+                Back to Home
+            </Link>
+            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mt-4 bg-gradient-to-br from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 bg-clip-text text-transparent">
+                API Documentation
+            </h1>
+            <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
+                Integrate IpsumForge's powerful text generation into your own application for free.
+            </p>
+        </div>
 
         {/* Base URL */}
-        <section className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md mb-3">
-          <h2 className="text-xl font-semibold mb-2">Base URL</h2>
-          <p className="text-gray-700 dark:text-gray-300">All API requests are made to the following base URL:</p>
-          <code className="block bg-gray-100 dark:bg-gray-900 p-2 rounded mt-2 text-xs">
-            https://apiispumforge.vercel.app
-          </code>
+        <section className="mb-12">
+          <div className="flex items-center gap-3">
+            <FiBox className="h-6 w-6 text-indigo-500"/>
+            <h2 className="text-2xl font-bold">Base URL</h2>
+          </div>
+          <p className="mt-2 text-slate-600 dark:text-slate-400">All API requests are made to the following base URL:</p>
+          <CodeBlock codeString="https://ipsumforge.unibrik.com/api" />
         </section>
 
         {/* Generate Endpoint */}
-        <section className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md mb-3">
-          <h2 className="text-xl font-semibold mb-2">1. Generate Lorem Text</h2>
-          <p className="text-gray-700 dark:text-gray-300">Generates random Lorem Ipsum text based on specified parameters.</p>
+        <section className="mb-12">
+          <div className="flex items-center gap-3">
+             <FiZap className="h-6 w-6 text-indigo-500"/>
+             <h2 className="text-2xl font-bold">Generate Endpoint</h2>
+          </div>
+          <p className="mt-2 text-slate-600 dark:text-slate-400">Generates random Lorem Ipsum text based on specified parameters.</p>
 
-          <h3 className="text-xl font-medium mt-4">Request</h3>
-          <p className="text-gray-700 dark:text-gray-300">Use the following GET request:</p>
-          <code className="block bg-gray-100 break-all dark:bg-gray-900 p-2 rounded mt-2 text-xs">
-            GET /generate?paragraphs=2&word_count=50&language=english
-          </code>
+          <h3 className="text-lg font-semibold mt-6">HTTP Request</h3>
+          <CodeBlock codeString="GET https://ipsumforge.unibrik.com/api/generate?paragraphs=3&word_count=50&language=english" />
 
-          <h4 className="font-semibold mt-4">Query Parameters:</h4>
-          <ul className="list-disc list-inside text-gray-700 dark:text-gray-300">
-            <li><strong>paragraphs (optional)</strong>: Number of paragraphs (default: 1)</li>
-            <li><strong>word_count (optional)</strong>: Words per paragraph (default: 50)</li>
-            <li><strong>language (optional)</strong>: Language code (e.g., english, spanish, french)</li>
-          </ul>
+          <h3 className="text-lg font-semibold mt-6">Command-Line Request</h3>
+          <CommandTabs />
 
-          <h3 className="text-xl font-medium mt-4">Response Example</h3>
-          <pre className="block overflow-auto bg-gray-100 dark:bg-gray-900 p-2 rounded mt-2 text-xs break-all">
-            {`{
-  "paragraphs": [
-    "Lorem ipsum dolor sit amet,adipiscing elit...",
-    "Nulla convallis egestas rhoncus, qu..."
-  ]
-}`}
-          </pre>
+          <h4 className="font-semibold mt-8 mb-2">Query Parameters:</h4>
+          <div className="prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-400">
+            <ul>
+              <li><strong>paragraphs</strong> (optional, number): Number of paragraphs to generate. Default: `1`.</li>
+              <li><strong>word_count</strong> (optional, number): Average words per paragraph. Default: `50`.</li>
+              <li><strong>language</strong> (optional, string): The desired language. See supported languages below. Default: `english`.</li>
+            </ul>
+          </div>
+
+          <h3 className="text-lg font-semibold mt-8">Example Response</h3>
+          <CodeBlock codeString={`{\n  "paragraphs": [\n    "Lorem ipsum dolor sit amet, adipiscing elit...",\n    "Nulla convallis egestas rhoncus, qu..."\n  ]\n}`} />
         </section>
 
         {/* Language Support */}
-        <section className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md mb-3">
-          <h2 className="text-xl font-semibold mb-2">Supported Languages</h2>
-          <p className="text-gray-700 dark:text-gray-300">You can generate Lorem text in the following languages:</p>
-          <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mt-2">
-            {[
-              "English", "Spanish", "French", "German", "Hindi", "Chinese", "Japanese",
-              "Italian", "Portuguese", "Russian", "Arabic", "Turkish", "Dutch", "Korean",
-              "Swedish", "Polish", "Greek", "Hebrew", "Thai", "Indonesian"
-            ].map((lang) => (
-              <li key={lang}>{lang}</li>
+        <section className="mb-12">
+            <div className="flex items-center gap-3">
+                <FiList className="h-6 w-6 text-indigo-500"/>
+                <h2 className="text-2xl font-bold">Supported Languages</h2>
+            </div>
+          <p className="mt-2 text-slate-600 dark:text-slate-400">You can generate text in the following languages:</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {languages.map((lang) => (
+              <span key={lang} className="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 text-sm font-medium px-3 py-1 rounded-full">
+                {lang}
+              </span>
             ))}
-          </ul>
+          </div>
         </section>
 
         {/* Error Handling */}
-        <section className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-2">Error Handling</h2>
-          <p className="text-gray-700 dark:text-gray-300">
-            The API returns JSON-formatted error messages when something goes wrong:
+        <section>
+          <div className="flex items-center gap-3">
+            <FiAlertTriangle className="h-6 w-6 text-indigo-500"/>
+            <h2 className="text-2xl font-bold">Error Handling</h2>
+          </div>
+          <p className="mt-2 text-slate-600 dark:text-slate-400">
+            The API returns JSON-formatted error messages with standard HTTP status codes.
           </p>
-          <pre className="block overflow-auto bg-gray-100 dark:bg-gray-900 p-2 rounded mt-2 text-xs break-all">
-            {`{
-  "error": "Language not supported",
-  "code": 400
-}`}
-          </pre>
-          <p className="text-gray-700 dark:text-gray-300 mt-2">Common error codes:</p>
-          <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mt-2">
-            <li><strong>400:</strong> Bad Request (e.g., unsupported language)</li>
-            <li><strong>500:</strong> Internal Server Error (server issues)</li>
-          </ul>
+          <h3 className="text-lg font-semibold mt-6">Example Error</h3>
+          <CodeBlock codeString={`{\n  "error": "Language not supported",\n  "code": 400\n}`} />
+           <div className="prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 mt-4">
+                <ul>
+                    <li><strong>400 Bad Request:</strong> Invalid parameters, such as an unsupported language.</li>
+                    <li><strong>500 Internal Server Error:</strong> An unexpected error occurred on our end.</li>
+                </ul>
+            </div>
         </section>
+
+        <footer className="text-center mt-10 border-t border-slate-200 dark:border-slate-800">
+            
+        </footer>
       </main>
-      <div className="flex justify-between my-2 text-xs px-3 text-slate-600 dark:text-slate-400">
-        <div className="flex items-center gap-1 ">
-          <svg className="h-4 stroke-slate-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M14 9C13.5197 8.40081 12.93 8 12 8C10.0769 8 9 9.14286 9 12C9 14.8571 10.0769 16 12 16C12.93 16 13.5197 15.5992 14 15M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-          2025
-          IpsumForge
-          Built with
-          <svg className="h-4 stroke-slate-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.7 4C18.87 4 21 6.98 21 9.76C21 15.39 12.16 20 12 20C11.84 20 3 15.39 3 9.76C3 6.98 5.13 4 8.3 4C10.12 4 11.31 4.91 12 5.71C12.69 4.91 13.88 4 15.7 4Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-          by
-          <a className="underline" href="https://jtsh.vercel.app">Jitesh</a></div>
-        <div>
-          <Link href="/about" className=" hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg px-2 py-2">About
-          </Link>
-          <Link href="/dev" className="hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg px-2 py-2">API
-          </Link></div>
-      </div>
     </div>
   );
 }
